@@ -1,0 +1,19 @@
+plugins {
+    id 'groovy'
+    id 'io.freefair.lombok' version '4.1.2'
+    id 'java'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 13
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'org.codehaus.groovy', name: 'groovy-all', version: '2.5.8'
+    testCompile group: 'org.spockframework', name: 'spock-core', version: '1.2-groovy-2.5'
+}
