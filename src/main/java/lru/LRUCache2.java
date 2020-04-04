@@ -3,37 +3,37 @@ package lru;
 import java.util.HashMap;
 import java.util.Map;
 
-class DoubleLinkedListNode {
+class Node {
     public final int key;
     public int val;
-    public DoubleLinkedListNode prev;
-    public DoubleLinkedListNode next;
+    public Node prev;
+    public Node next;
 
-    public DoubleLinkedListNode() {
+    public Node() {
         key = 0;
         val = 0;
     }
 
-    public DoubleLinkedListNode(int key, int val) {
+    public Node(int key, int val) {
         this.key = key;
         this.val = val;
     }
 }
 
-class DoubleLinkedList {
-    private final DoubleLinkedListNode leftGuard = new DoubleLinkedListNode();
-    private final DoubleLinkedListNode rightGuard = new DoubleLinkedListNode();
+class DoublyLinkedList {
+    private final Node leftGuard = new Node();
+    private final Node rightGuard = new Node();
 
-    public DoubleLinkedList() {
+    public DoublyLinkedList() {
         leftGuard.next = rightGuard;
         rightGuard.prev = leftGuard;
     }
 
-    DoubleLinkedListNode getFirst() {
+    Node getFirst() {
         return isNotEmpty() ? leftGuard.next : null;
     }
 
-    void remove(DoubleLinkedListNode node) {
+    void remove(Node node) {
         // because of guards, if node is in the list - node.prev != null, node.next != null
         node.prev.next = node.next;
         node.next.prev = node.prev;
@@ -43,22 +43,22 @@ class DoubleLinkedList {
         return leftGuard.next != rightGuard;
     }
 
-    void addLast(DoubleLinkedListNode node) {
+    void addLast(Node node) {
         rightGuard.prev.next = node;
         node.prev = rightGuard.prev;
         rightGuard.prev = node;
         node.next = rightGuard;
     }
 
-    void moveToEnd(DoubleLinkedListNode node) {
+    void moveToEnd(Node node) {
         remove(node);
         addLast(node);
     }
 }
 
 class LRUCache2 {
-    private Map<Integer, DoubleLinkedListNode> cache = new HashMap<>();
-    private DoubleLinkedList usageLog = new DoubleLinkedList();
+    private Map<Integer, Node> cache = new HashMap<>();
+    private DoublyLinkedList usageLog = new DoublyLinkedList();
     private int capacity;
 
     public LRUCache2(int capacity) {
@@ -69,7 +69,7 @@ class LRUCache2 {
         if (!cache.containsKey(key)) {
             return -1;
         }
-        DoubleLinkedListNode node = cache.get(key);
+        Node node = cache.get(key);
         usageLog.moveToEnd(node);
         return node.val;
     }
@@ -85,7 +85,7 @@ class LRUCache2 {
     }
 
     private void add(int key, int value) {
-        DoubleLinkedListNode node = new DoubleLinkedListNode(key, value);
+        Node node = new Node(key, value);
         cache.put(key, node);
         usageLog.addLast(node);
     }
