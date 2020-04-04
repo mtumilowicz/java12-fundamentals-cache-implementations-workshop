@@ -18,9 +18,7 @@ class LFUCache {
             return -1;
         }
         Node node = cache.get(key);
-
         incrementFrequency(node);
-
         return node.val;
     }
 
@@ -31,15 +29,13 @@ class LFUCache {
             Node node = cache.get(key);
             node.val = value;
             incrementFrequency(node);
-            cache.put(key, node);
         } else {
             removeLrfuIfFull();
-            add(key, value);
+            addNew(key, value);
         }
-
     }
 
-    private void add(int key, int value) {
+    private void addNew(int key, int value) {
         Node node = new Node(key, value);
         cache.put(key, node);
         addFrequency(node);
