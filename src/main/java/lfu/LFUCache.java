@@ -4,28 +4,6 @@ import java.util.HashMap;
 
 class LFUCache {
 
-    /*
-    Approach: Create a class called Node which will be a node of a DoublyLinkedList having key, value, frequency,
-          prevNode and nextNode.
-          Use a HashMap (keyNodeMap: key -> Node) to handle data access by key.
-          Then use a HashMap (freqNodeDLLMap: frequency -> DoublyLinkedList<Node>) to handle frequency.
-          Also, maintain a variable (minumumFrequency) which will store the current minimum frequency of keys in cache.
-          Thus if we want to add a new key, we just need to find (or create new) the likedlist by its frequency (which is 1),
-          add the item to the start of the linked list.
-          If cache is full and we need to remove an item, we will get the minimum frequency (minumumFrequency),
-          get the appropriate linkedlist from freqNodeDLLMap by it, then remove the last item of that linkedlist.
-          Also we'll use the key of that removed item to remove the item from our cache (keyNodeMap).
-          If we want to increment the freqneucy of a key, we'll get the node, remove it from its current frequency linked list
-          by joining it's prevNode and nextNode (This is why we're using DoublyLinkedList. No need to find a node by traversing
-          to remove it. If we have the node, we can just join its previous and next node to remove it.). Then add the node to
-          the linkedlist of the new (incremented) frequency.
-          Thus, the frequency ranking management will be done in O(1) time.
-    
-    Complexity analysis: Time: O(1), Space: O(n).
-
-    */
-
-
     int capacity;
     HashMap<Integer, Node> cache = new HashMap<>();
     HashMap<Integer, DoubleLinkedList> frequencies = new HashMap<>();
