@@ -46,10 +46,12 @@ class LFUCache {
             }
 
             Node node = new Node(key, value);
-            incrementFrequency(node);
-            cache.put(key, node);
+            node.frequency++;
 
+            addFrequency(node);
             minimumFrequency = 1;
+
+            cache.put(key, node);
         }
 
     }
@@ -63,20 +65,6 @@ class LFUCache {
         }
     }
 
-    private void incrementFrequency(Node node) {
-        removeFromFrequency(node);
-        incrementAndAdd(node);
-    }
-
-    private void removeFromFrequency(Node node) {
-        if (frequencies.containsKey(node.frequency)) {
-            frequencies.get(node.frequency).remove(node);
-            if (node.frequency == minimumFrequency && frequencies.get(node.frequency).isEmpty()) {
-                minimumFrequency++;
-            }
-        }
-    }
-
     private void removeFrequency(Node node) {
         if (frequencies.containsKey(node.frequency)) {
             frequencies.get(node.frequency).remove(node);
@@ -84,7 +72,8 @@ class LFUCache {
     }
 
     private void refreshMinimum() {
-        if (frequencies.get(minimumFrequency).isEmpty()) {
+        var minimums = frequencies.get(minimumFrequency);
+        if (minimums.isEmpty()) {
             frequencies.remove(minimumFrequency);
             minimumFrequency++;
         }
@@ -146,15 +135,6 @@ class DoubleLinkedList {
         node.prev = rightGuard.prev;
         rightGuard.prev = node;
         node.next = rightGuard;
-    }
-
-    void moveToEnd(Node node) {
-        remove(node);
-        addLast(node);
-    }
-
-    public boolean hasSingleElement() {
-        return leftGuard.next.next == rightGuard;
     }
 
     public boolean isEmpty() {
