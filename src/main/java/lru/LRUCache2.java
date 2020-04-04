@@ -77,15 +77,15 @@ class LRUCache2 {
     public void put(int key, int value) {
         if (cache.containsKey(key)) {
             var node = cache.get(key);
-            usageLog.moveToEnd(node);
             node.val = value;
+            usageLog.moveToEnd(node);
         } else {
             removeLruIfFull();
-            add(key, value);
+            addNew(key, value);
         }
     }
 
-    private void add(int key, int value) {
+    private void addNew(int key, int value) {
         Node node = new Node(key, value);
         cache.put(key, node);
         usageLog.addLast(node);
