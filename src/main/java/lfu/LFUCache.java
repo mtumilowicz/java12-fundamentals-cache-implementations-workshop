@@ -35,7 +35,6 @@ class LFUCache {
                 removeLruIfFull();
             }
 
-
             Node node = new Node(key, value);
             incrementFrequency(node);
             cache.put(key, node);
@@ -71,6 +70,11 @@ class LFUCache {
             oldNodeDLinkedList.remove(node);
         }
 
+        addFrequency(node);
+    }
+
+    private void addFrequency(Node node) {
+        int oldFrequency = node.frequency;
         int newFrequency = oldFrequency + 1;
         node.frequency = newFrequency;
         var newNodeDLinkedList = frequencies.getOrDefault(newFrequency, new DoubleLinkedList());
