@@ -5,11 +5,11 @@ import list.Node;
 
 import java.util.HashMap;
 
-class LFUCache {
+class LFUCache<K, V> {
 
-    HashMap<Integer, Node> cache = new HashMap<>();
+    HashMap<K, Node<K, V>> cache = new HashMap<>();
 
-    HashMap<Integer, DoublyLinkedList> frequencies = new HashMap<>();
+    HashMap<Integer, DoublyLinkedList<K, V>> frequencies = new HashMap<>();
 
     int capacity;
 
@@ -19,20 +19,20 @@ class LFUCache {
         this.capacity = capacity;
     }
 
-    public int get(int key) {
+    public V get(K key) {
         if (!cache.containsKey(key)) {
-            return -1;
+            return null;
         }
-        Node node = cache.get(key);
+        Node<K, V> node = cache.get(key);
         incrementFrequency(node);
         return node.val;
     }
 
-    public void put(int key, int value) {
+    public void put(K key, V value) {
         if (capacity <= 0) return;
 
         if (cache.containsKey(key)) {
-            Node node = cache.get(key);
+            Node<K, V> node = cache.get(key);
             node.val = value;
             incrementFrequency(node);
         } else {
@@ -41,14 +41,14 @@ class LFUCache {
         }
     }
 
-    private void addNew(int key, int value) {
-        Node node = new Node(key, value);
+    private void addNew(K key, V value) {
+        Node<K, V> node = new Node<>(key, value);
         cache.put(key, node);
         addFrequency(node);
         minimumFrequency = 1;
     }
 
-    private void incrementFrequency(Node node) {
+    private void incrementFrequency(Node<K, V> node) {
         removeFrequency(node);
         node.frequency++;
         addFrequency(node);
@@ -64,7 +64,7 @@ class LFUCache {
         }
     }
 
-    private void removeFrequency(Node node) {
+    private void removeFrequency(Node<K, V> node) {
         if (frequencies.containsKey(node.frequency)) {
             frequencies.get(node.frequency).remove(node);
         }
@@ -77,8 +77,8 @@ class LFUCache {
         }
     }
 
-    private void addFrequency(Node node) {
-        frequencies.computeIfAbsent(node.frequency, ignore -> new DoublyLinkedList()).addLast(node);
+    private void addFrequency(Node<K, V> node) {
+        frequencies.computeIfAbsent(node.frequency, ignore -> new DoublyLinkedList<>()).addLast(node);
     }
 }
 

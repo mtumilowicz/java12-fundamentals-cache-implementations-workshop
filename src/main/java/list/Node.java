@@ -3,14 +3,14 @@ package list;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
-public class Node {
-    public int key;
-    public int val;
+public class Node<K, V> {
+    public K key;
+    public V val;
     public int frequency;
-    public Node prev;
-    public Node next;
+    public Node<K, V> prev;
+    public Node<K, V> next;
 
-    public Node(int key, int val) {
+    public Node(K key, V val) {
         this.key = key;
         this.val = val;
     }
