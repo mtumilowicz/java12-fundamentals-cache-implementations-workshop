@@ -1,12 +1,18 @@
 package lfu;
 
+import list.DoublyLinkedList;
+import list.Node;
+
 import java.util.HashMap;
 
 class LFUCache {
 
-    int capacity;
     HashMap<Integer, Node> cache = new HashMap<>();
-    HashMap<Integer, DoubleLinkedList> frequencies = new HashMap<>();
+
+    HashMap<Integer, DoublyLinkedList> frequencies = new HashMap<>();
+
+    int capacity;
+
     int minimumFrequency = 1;
 
     public LFUCache(int capacity) {
@@ -72,60 +78,7 @@ class LFUCache {
     }
 
     private void addFrequency(Node node) {
-        frequencies.computeIfAbsent(node.frequency, ignore -> new DoubleLinkedList()).addLast(node);
+        frequencies.computeIfAbsent(node.frequency, ignore -> new DoublyLinkedList()).addLast(node);
     }
 }
 
-class Node {
-    public final int key;
-    public int val;
-    public int frequency;
-    public Node prev;
-    public Node next;
-
-    public Node() {
-        key = 0;
-        val = 0;
-    }
-
-    public Node(int key, int val) {
-        this.key = key;
-        this.val = val;
-        this.frequency = 1;
-    }
-}
-
-class DoubleLinkedList {
-    private final Node leftGuard = new Node();
-    private final Node rightGuard = new Node();
-
-    public DoubleLinkedList() {
-        leftGuard.next = rightGuard;
-        rightGuard.prev = leftGuard;
-    }
-
-    Node getFirst() {
-        return isNotEmpty() ? leftGuard.next : null;
-    }
-
-    void remove(Node node) {
-        // because of guards, if node is in the list - node.prev != null, node.next != null
-        node.prev.next = node.next;
-        node.next.prev = node.prev;
-    }
-
-    private boolean isNotEmpty() {
-        return leftGuard.next != rightGuard;
-    }
-
-    void addLast(Node node) {
-        rightGuard.prev.next = node;
-        node.prev = rightGuard.prev;
-        rightGuard.prev = node;
-        node.next = rightGuard;
-    }
-
-    public boolean isEmpty() {
-        return leftGuard.next == rightGuard;
-    }
-}
