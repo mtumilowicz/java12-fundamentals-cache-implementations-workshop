@@ -18,7 +18,12 @@ class LFUCache {
             return -1;
         }
         Node node = cache.get(key);
-        incrementFrequency(node);
+
+        removeFrequency(node);
+        refreshMinimum();
+        node.frequency++;
+        addFrequency(node);
+
         return node.val;
     }
 
@@ -65,6 +70,23 @@ class LFUCache {
                 minimumFrequency++;
             }
         }
+    }
+
+    private void removeFrequency(Node node) {
+        if (frequencies.containsKey(node.frequency)) {
+            frequencies.get(node.frequency).remove(node);
+        }
+    }
+
+    private void refreshMinimum() {
+        if (frequencies.get(minimumFrequency).isEmpty()) {
+            frequencies.remove(minimumFrequency);
+            minimumFrequency++;
+        }
+    }
+
+    private void addFrequency(Node node) {
+        frequencies.computeIfAbsent(node.frequency, ignore -> new DoubleLinkedList()).addLast(node);
     }
 
     private void incrementAndAdd(Node node) {
