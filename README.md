@@ -10,6 +10,14 @@
     * https://en.wikipedia.org/wiki/Least_frequently_used
     * https://medium.com/algorithm-and-datastructure/lfu-cache-in-o-1-in-java-4bac0892bdb3
 
+## preface
+* goals of this workshop
+    * understand concept of LRU cache
+    * understand concept of LFU cache
+    * implement LRU and LFU cache
+
+* workshop: answers: 
+
 ## least recently used (LRU)
 * discards the least recently used items first
 * operations
@@ -36,4 +44,4 @@
     for an extended period of time
     * an explicit LFU system is fairly uncommon; instead, there are hybrids that utilize LFU concepts
 * solution
-    * cache map, frequency map
+    * cache map, frequency map, frequency list
