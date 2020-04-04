@@ -60,7 +60,6 @@ class LRUCache2 {
     private Map<Integer, DoubleLinkedListNode> cache = new HashMap<>();
     private DoubleLinkedList usageLog = new DoubleLinkedList();
     private int capacity;
-    private int size = 0;
 
     public LRUCache2(int capacity) {
         this.capacity = capacity;
@@ -89,15 +88,13 @@ class LRUCache2 {
         DoubleLinkedListNode node = new DoubleLinkedListNode(key, value);
         cache.put(key, node);
         usageLog.addLast(node);
-        size++;
     }
 
     private void removeLruIfFull() {
-        if (size == capacity) {
+        if (cache.size() == capacity) {
             var lru = usageLog.getFirst();
             cache.remove(lru.key);
             usageLog.remove(lru);
-            size--;
         }
     }
 }
