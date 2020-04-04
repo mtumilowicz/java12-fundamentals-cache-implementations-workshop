@@ -36,3 +36,4 @@
     for an extended period of time
     * an explicit LFU system is fairly uncommon; instead, there are hybrids that utilize LFU concepts
 * solution
+    * cache map, frequency map
