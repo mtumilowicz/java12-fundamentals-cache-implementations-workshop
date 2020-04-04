@@ -28,7 +28,7 @@ class LFUCache {
 
     int capacity;
     HashMap<Integer, Node> cache = new HashMap<>();
-    HashMap<Integer, NodeDLinkedList> frequencies = new HashMap<>();
+    HashMap<Integer, DoubleLinkedList> frequencies = new HashMap<>();
     int minimumFrequency = 1;
 
     public LFUCache(int capacity) {
@@ -41,36 +41,40 @@ class LFUCache {
         }
         Node node = cache.get(key);
         incrementFrequency(node);
-        return node.value;
+        return node.val;
     }
 
     public void put(int key, int value) {
         if (cache.containsKey(key)) {
             Node node = cache.get(key);
-            node.value = value;
+            node.val = value;
             incrementFrequency(node);
             cache.put(key, node);
         } else {
-
-            Node node = new Node(key, value);                                           //Create new node
-
-            if (cache.size() == capacity) {                                          //Cache is full
-                Node removedLastNode = frequencies.get(minimumFrequency)
-                        .removeLastNode();                              //Remove LFU node from removedLastNode
-                cache.remove(removedLastNode.key);                                 //Remove LFU node from cache
+            Node node = new Node(key, value);
+            if (cache.size() == capacity) {
+                removeLruIfFull();
             }
 
-            incrementFrequency(node);                                                   //Add to frequency map
-            cache.put(key, node);                                                  //Add to cache
+            incrementFrequency(node);
+            cache.put(key, node);
 
-            minimumFrequency = 1;                                                       //Since new node is having freqency as 1,
-            //update minumumFrequency to be 1
+            minimumFrequency = 1;
         }
 
     }
 
+    private void removeLruIfFull() {
+        if (cache.size() == capacity) {
+            var list = frequencies.get(minimumFrequency);
+            var lru = list.getFirst();
+            cache.remove(lru.key);
+            list.remove(lru);
+        }
+    }
+
     private boolean isOnlyMinimum(Node node) {
-        NodeDLinkedList oldNodeDLinkedList = frequencies.get(node.frequency);
+        var oldNodeDLinkedList = frequencies.get(node.frequency);
         return isMinimumFrequency(node) && oldNodeDLinkedList.hasSingleElement();
     }
 
@@ -82,14 +86,14 @@ class LFUCache {
             if (isOnlyMinimum(node)) {
                 minimumFrequency++;
             }
-            NodeDLinkedList oldNodeDLinkedList = frequencies.get(oldFrequency);
+            var oldNodeDLinkedList = frequencies.get(oldFrequency);
             oldNodeDLinkedList.remove(node);
         }
 
         int newFrequency = oldFrequency + 1;
         node.frequency = newFrequency;
-        NodeDLinkedList newNodeDLinkedList = frequencies.getOrDefault(newFrequency, new NodeDLinkedList());
-        newNodeDLinkedList.add(node);
+        var newNodeDLinkedList = frequencies.getOrDefault(newFrequency, new DoubleLinkedList());
+        newNodeDLinkedList.addLast(node);
         frequencies.put(newFrequency, newNodeDLinkedList);
     }
 
@@ -99,76 +103,59 @@ class LFUCache {
 }
 
 class Node {
-    int key;
-    int value;
-    int frequency;
-    Node prev;
-    Node next;
+    public final int key;
+    public int val;
+    public int frequency;
+    public Node prev;
+    public Node next;
 
-    Node(int key, int value) {
+    public Node() {
+        key = 0;
+        val = 0;
+    }
+
+    public Node(int key, int val) {
         this.key = key;
-        this.value = value;
+        this.val = val;
     }
 }
 
-class NodeDLinkedList {
+class DoubleLinkedList {
+    private final Node leftGuard = new Node();
+    private final Node rightGuard = new Node();
 
-    Node head, tail;
-    private int length;
-
-    //Add a node to top
-    void add(Node node) {
-
-        //Remove old pointers
-        node.prev = null;
-        node.next = null;
-
-        if (head == null) {                                                               //Empty list
-            head = node;
-            tail = node;
-        } else {
-            node.next = head;                                                         //Forward linking
-            head.prev = node;                                                         //Backward linking
-            head = node;
-        }
-
-        length++;
+    public DoubleLinkedList() {
+        leftGuard.next = rightGuard;
+        rightGuard.prev = leftGuard;
     }
 
-    //Remove a node
+    Node getFirst() {
+        return isNotEmpty() ? leftGuard.next : null;
+    }
+
     void remove(Node node) {
-
-        if (node == head) {                                                               //Need to remove head node
-            if (node == tail) {                                                           //Tail node is the same (list size = 1)
-                tail = null;                                                            //Make tail null
-            }
-            head = head.next;                                                         //Make head point to the next node
-        } else {                                                                         //Need to remove later node
-            node.prev.next = node.next;                                               //Forward linking
-
-            if (node == tail) {                                                           //Need to remove tail node
-                tail = node.prev;                                                     //Point tail to prev node
-            } else {
-                node.next.prev = node.prev;                                           //Backward linking
-            }
-        }
-
-        length--;
-
+        // because of guards, if node is in the list - node.prev != null, node.next != null
+        node.prev.next = node.next;
+        node.next.prev = node.prev;
     }
 
-    //Remove last node
-    Node removeLastNode() {
-
-        Node tailNode = tail;
-
-        if (tailNode != null) {                                                         //LastNode exists
-            remove(tailNode);
-        }
-        return tailNode;
+    private boolean isNotEmpty() {
+        return leftGuard.next != rightGuard;
     }
 
-    boolean hasSingleElement() {
-        return length == 1;
+    void addLast(Node node) {
+        rightGuard.prev.next = node;
+        node.prev = rightGuard.prev;
+        rightGuard.prev = node;
+        node.next = rightGuard;
+    }
+
+    void moveToEnd(Node node) {
+        remove(node);
+        addLast(node);
+    }
+
+    public boolean hasSingleElement() {
+        return leftGuard.next.next == rightGuard;
     }
 }
