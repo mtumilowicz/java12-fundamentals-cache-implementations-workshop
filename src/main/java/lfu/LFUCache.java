@@ -33,7 +33,12 @@ class LFUCache {
         if (cache.containsKey(key)) {
             Node node = cache.get(key);
             node.val = value;
-            incrementFrequency(node);
+
+            removeFrequency(node);
+            refreshMinimum();
+            node.frequency++;
+            addFrequency(node);
+
             cache.put(key, node);
         } else {
             if (cache.size() == capacity) {
