@@ -53,30 +53,23 @@ class LFUCache {
         }
     }
 
-    private boolean isOnlyMinimum(Node node) {
-        var oldNodeDLinkedList = frequencies.get(node.frequency);
-        return isMinimumFrequency(node) && oldNodeDLinkedList.hasSingleElement();
+    private void incrementFrequency(Node node) {
+        removeFromFrequency(node);
+        incrementAndAdd(node);
     }
 
-    private void incrementFrequency(Node node) {
+    private void removeFromFrequency(Node node) {
         if (frequencies.containsKey(node.frequency)) {
-            if (isOnlyMinimum(node)) {
+            frequencies.get(node.frequency).remove(node);
+            if (node.frequency == minimumFrequency && frequencies.get(node.frequency).isEmpty()) {
                 minimumFrequency++;
             }
-            var oldNodeDLinkedList = frequencies.get(node.frequency);
-            oldNodeDLinkedList.remove(node);
         }
-
-        incrementAndAdd(node);
     }
 
     private void incrementAndAdd(Node node) {
         node.frequency++;
         frequencies.computeIfAbsent(node.frequency, ignore -> new DoubleLinkedList()).addLast(node);
-    }
-
-    private boolean isMinimumFrequency(Node node) {
-        return node.frequency == minimumFrequency;
     }
 }
 
@@ -135,5 +128,9 @@ class DoubleLinkedList {
 
     public boolean hasSingleElement() {
         return leftGuard.next.next == rightGuard;
+    }
+
+    public boolean isEmpty() {
+        return leftGuard.next == rightGuard;
     }
 }
