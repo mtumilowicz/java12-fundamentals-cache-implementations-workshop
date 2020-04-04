@@ -59,27 +59,20 @@ class LFUCache {
     }
 
     private void incrementFrequency(Node node) {
-
-        int oldFrequency = node.frequency;
-
-        if (frequencies.containsKey(oldFrequency)) {
+        if (frequencies.containsKey(node.frequency)) {
             if (isOnlyMinimum(node)) {
                 minimumFrequency++;
             }
-            var oldNodeDLinkedList = frequencies.get(oldFrequency);
+            var oldNodeDLinkedList = frequencies.get(node.frequency);
             oldNodeDLinkedList.remove(node);
         }
 
-        addFrequency(node);
+        incrementAndAdd(node);
     }
 
-    private void addFrequency(Node node) {
-        int oldFrequency = node.frequency;
-        int newFrequency = oldFrequency + 1;
-        node.frequency = newFrequency;
-        var newNodeDLinkedList = frequencies.getOrDefault(newFrequency, new DoubleLinkedList());
-        newNodeDLinkedList.addLast(node);
-        frequencies.put(newFrequency, newNodeDLinkedList);
+    private void incrementAndAdd(Node node) {
+        node.frequency++;
+        frequencies.computeIfAbsent(node.frequency, ignore -> new DoubleLinkedList()).addLast(node);
     }
 
     private boolean isMinimumFrequency(Node node) {
