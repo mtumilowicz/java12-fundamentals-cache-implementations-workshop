@@ -2,14 +2,17 @@ package lru;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 class DoubleLinkedListNode {
-    public int val;
-    public int key;
+    public final int val;
+    public final int key;
     public DoubleLinkedListNode prev;
     public DoubleLinkedListNode next;
 
     public DoubleLinkedListNode() {
+        key = 0;
+        val = 0;
     }
 
     public DoubleLinkedListNode(int val, int key) {
@@ -71,28 +74,41 @@ class LRUCache2 {
     }
 
     public int get(int key) {
-        if (!cache.containsKey(key)) return -1;
+        if (!cache.containsKey(key)) {
+            return -1;
+        }
         DoubleLinkedListNode node = cache.get(key);
         lru.moveToEnd(node);
         return node.val;
     }
 
     public void put(int key, int value) {
-        if (cache.containsKey(key)) {
-            DoubleLinkedListNode node = cache.get(key);
-            node.val = value;
-            lru.moveToEnd(node);
-        } else {
-            if (size == capacity) {
-                var first = lru.getFirst();
-                cache.remove(first.key);
-                lru.removeFirst();
-                size--;
-            }
-            DoubleLinkedListNode node = new DoubleLinkedListNode(key, value);
-            cache.put(key, node);
-            lru.addLast(node);
-            size++;
+        removeIfExists(key);
+        removeIfFull();
+        add(key, value);
+    }
+
+    private void add(int key, int value) {
+        DoubleLinkedListNode node = new DoubleLinkedListNode(key, value);
+        cache.put(key, node);
+        lru.addLast(node);
+        size++;
+    }
+
+    private void removeIfExists(int key) {
+        Optional.ofNullable(cache.get(key))
+                .ifPresent(node -> {
+                    lru.remove(node);
+                    cache.remove(node.key);
+                });
+    }
+
+    private void removeIfFull() {
+        if (size == capacity) {
+            var first = lru.getFirst();
+            cache.remove(first.key);
+            lru.removeFirst();
+            size--;
         }
     }
 }
