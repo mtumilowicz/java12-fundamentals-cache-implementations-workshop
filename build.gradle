@@ -1,6 +1,5 @@
 plugins {
     id 'groovy'
-    id 'io.freefair.lombok' version '4.1.2'
     id 'java'
 }
 
