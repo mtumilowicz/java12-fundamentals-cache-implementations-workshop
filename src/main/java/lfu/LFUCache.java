@@ -69,28 +69,32 @@ class LFUCache {
 
     }
 
+    private boolean isOnlyMinimum(Node node) {
+        NodeDLinkedList oldNodeDLinkedList = freqNodeDLLMap.get(node.frequency);
+        return isMinimumFrequency(node) && oldNodeDLinkedList.hasSingleElement();
+    }
 
     private void incrementFrequency(Node node) {
 
         int oldFrequency = node.frequency;
 
-        if (freqNodeDLLMap.containsKey(oldFrequency)) {                                   //Frequency already exists
-            NodeDLinkedList oldNodeDLinkedList = freqNodeDLLMap.get(oldFrequency);      //Get frequency linkedlist
-            oldNodeDLinkedList.remove(node);                                            //Remove current node
-            if (node.frequency == minumumFrequency &&                                    //If this frequency was the minumum freq.
-                    oldNodeDLinkedList.length == 0) {                                        //and no node is having this freq anymore
-                minumumFrequency++;                                                     //Increment minumum frequency
+        if (freqNodeDLLMap.containsKey(oldFrequency)) {
+            if (isOnlyMinimum(node)) {
+                minumumFrequency++;
             }
+            NodeDLinkedList oldNodeDLinkedList = freqNodeDLLMap.get(oldFrequency);
+            oldNodeDLinkedList.remove(node);
         }
 
-        int newFrequency = oldFrequency + 1;                                            //Increment frequency
-        node.frequency = newFrequency;                                                  //Set new frequency to node
-        NodeDLinkedList newNodeDLinkedList =                                            //Get or create the LinkedList for 
-                freqNodeDLLMap.getOrDefault(                                                //this new frequency
-                        newFrequency, new NodeDLinkedList()
-                );
-        newNodeDLinkedList.add(node);                                                   //Add node to the freq linkedlist
-        freqNodeDLLMap.put(newFrequency, newNodeDLinkedList);                           //Put freq linkedlist to freqNodeDLLMap
+        int newFrequency = oldFrequency + 1;
+        node.frequency = newFrequency;
+        NodeDLinkedList newNodeDLinkedList = freqNodeDLLMap.getOrDefault(newFrequency, new NodeDLinkedList());
+        newNodeDLinkedList.add(node);
+        freqNodeDLLMap.put(newFrequency, newNodeDLinkedList);
+    }
+
+    private boolean isMinimumFrequency(Node node) {
+        return node.frequency == minumumFrequency;
     }
 }
 
@@ -104,14 +108,13 @@ class Node {
     Node(int key, int value) {
         this.key = key;
         this.value = value;
-        this.frequency = frequency;
     }
 }
 
 class NodeDLinkedList {
 
     Node head, tail;
-    int length;
+    private int length;
 
     //Add a node to top
     void add(Node node) {
@@ -163,5 +166,9 @@ class NodeDLinkedList {
             remove(tailNode);
         }
         return tailNode;
+    }
+
+    boolean hasSingleElement() {
+        return length == 1;
     }
 }
