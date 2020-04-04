@@ -5,8 +5,8 @@ import java.util.Map;
 import java.util.Optional;
 
 class DoubleLinkedListNode {
-    public final int val;
     public final int key;
+    public final int val;
     public DoubleLinkedListNode prev;
     public DoubleLinkedListNode next;
 
@@ -15,9 +15,9 @@ class DoubleLinkedListNode {
         val = 0;
     }
 
-    public DoubleLinkedListNode(int val, int key) {
-        this.val = val;
+    public DoubleLinkedListNode(int key, int val) {
         this.key = key;
+        this.val = val;
     }
 }
 
@@ -38,12 +38,6 @@ class DoubleLinkedList {
         // because of guards, if node is in the list - node.prev != null, node.next != null
         node.prev.next = node.next;
         node.next.prev = node.prev;
-    }
-
-    void removeFirst() {
-        if (isNotEmpty()) {
-            remove(leftGuard.next);
-        }
     }
 
     private boolean isNotEmpty() {
@@ -83,8 +77,8 @@ class LRUCache2 {
     }
 
     public void put(int key, int value) {
-        removeIfExists(key);
-        removeIfFull();
+        Optional.ofNullable(cache.get(key))
+                .ifPresentOrElse(this::removeIfNonNull, this::removeLruIfFull);
         add(key, value);
     }
 
@@ -95,20 +89,17 @@ class LRUCache2 {
         size++;
     }
 
-    private void removeIfExists(int key) {
-        Optional.ofNullable(cache.get(key))
-                .ifPresent(node -> {
-                    lru.remove(node);
-                    cache.remove(node.key);
-                });
+    private void removeLruIfFull() {
+        if (size == capacity) {
+            removeIfNonNull(lru.getFirst());
+        }
     }
 
-    private void removeIfFull() {
-        if (size == capacity) {
-            var first = lru.getFirst();
-            cache.remove(first.key);
-            lru.removeFirst();
+    private void removeIfNonNull(DoubleLinkedListNode node) {
+        Optional.ofNullable(node).ifPresent(x -> {
+            cache.remove(node.key);
+            lru.remove(node);
             size--;
-        }
+        });
     }
 }
