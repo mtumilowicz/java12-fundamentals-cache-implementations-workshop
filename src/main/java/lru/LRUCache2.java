@@ -2,11 +2,10 @@ package lru;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 class DoubleLinkedListNode {
     public final int key;
-    public final int val;
+    public int val;
     public DoubleLinkedListNode prev;
     public DoubleLinkedListNode next;
 
@@ -59,7 +58,7 @@ class DoubleLinkedList {
 
 class LRUCache2 {
     private Map<Integer, DoubleLinkedListNode> cache = new HashMap<>();
-    private DoubleLinkedList lru = new DoubleLinkedList();
+    private DoubleLinkedList usageLog = new DoubleLinkedList();
     private int capacity;
     private int size = 0;
 
@@ -72,34 +71,33 @@ class LRUCache2 {
             return -1;
         }
         DoubleLinkedListNode node = cache.get(key);
-        lru.moveToEnd(node);
+        usageLog.moveToEnd(node);
         return node.val;
     }
 
     public void put(int key, int value) {
-        Optional.ofNullable(cache.get(key))
-                .ifPresentOrElse(this::remove, this::removeLruIfFull);
-        add(key, value);
+        if (cache.containsKey(key)) {
+            var node = cache.get(key);
+            node.val = value;
+        } else {
+            removeLruIfFull();
+            add(key, value);
+        }
     }
 
     private void add(int key, int value) {
         DoubleLinkedListNode node = new DoubleLinkedListNode(key, value);
         cache.put(key, node);
-        lru.addLast(node);
+        usageLog.addLast(node);
         size++;
     }
 
     private void removeLruIfFull() {
         if (size == capacity) {
-            remove(lru.getFirst());
-        }
-    }
-
-    private void remove(DoubleLinkedListNode node) {
-        Optional.ofNullable(node).ifPresent(x -> {
-            cache.remove(node.key);
-            lru.remove(node);
+            var lru = usageLog.getFirst();
+            cache.remove(lru.key);
+            usageLog.remove(lru);
             size--;
-        });
+        }
     }
 }
