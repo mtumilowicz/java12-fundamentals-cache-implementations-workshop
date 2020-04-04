@@ -77,6 +77,7 @@ class LRUCache2 {
     public void put(int key, int value) {
         if (cache.containsKey(key)) {
             var node = cache.get(key);
+            usageLog.moveToEnd(node);
             node.val = value;
         } else {
             removeLruIfFull();
