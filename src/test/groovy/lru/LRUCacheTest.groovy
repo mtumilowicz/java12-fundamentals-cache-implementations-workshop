@@ -3,40 +3,65 @@ package lru
 import spock.lang.Specification
 
 class LRUCacheTest extends Specification {
+
     def 'empty'() {
-        given:
-        def empty = new LRUCache<Integer, Integer>(1)
+        given: 'empty cache'
+        def cache = new LRUCache<Integer, Integer>(1)
 
-        expect:
-        !empty.get(1)
+        expect: 'get non-existing item returns null'
+        !cache.get(1)
     }
 
-    def 'single value'() {
-        given:
-        def single = new LRUCache<Integer, Integer>(1)
+    def 'put - get'() {
+        given: 'empty cache'
+        def cache = new LRUCache<Integer, Integer>(1)
 
-        when:
-        single.put(1, 2)
+        when: 'insert entry'
+        cache.put(1, 2)
 
-        then:
-        single.get(1) == 2
+        then: 'the entry is gettable'
+        cache.get(1) == 2
     }
 
-    def 'get refreshes recently used'() {
-        given:
-        def single = new LRUCache<Integer, Integer>(2)
+    def 'get moves entry as a least recently used'() {
+        given: 'empty cache with threshold 2'
+        def cache = new LRUCache<Integer, Integer>(2)
 
-        and:
-        single.put(1, 1)
-        single.put(2, 2)
+        and: 'fill the cache'
+        cache.put(1, 1)
+        cache.put(2, 2)
 
-        when:
-        single.get(1)
+        when: 'get entry oldest entry'
+        cache.get(1)
 
-        and:
-        single.put(3, 3)
+        and: 'trigger cache eviction'
+        cache.put(3, 3)
 
-        then:
-        !single.get(2)
+        then: 'entry that was get is present'
+        cache.get(1) == 1
+
+        and: 'oldest entry disappears'
+        !cache.get(2)
+    }
+
+    def 'verify if oldest entries are removed'() {
+        given: 'empty cache with threshold 3'
+        def cache = new LRUCache(3)
+
+        when: 'overflow threshold by 2'
+        cache.put(1, 1)
+        cache.put(2, 2)
+        cache.put(3, 3)
+        cache.put(4, 4)
+        cache.put(5, 5)
+
+        then: 'oldest entries are removed'
+        !cache.get(1)
+        !cache.get(2)
+
+        and: 'newest entries are present'
+        cache.get(3) == 3
+        cache.get(4) == 4
+        cache.get(5) == 5
     }
 }
