@@ -19,10 +19,7 @@ class LFUCache {
         }
         Node node = cache.get(key);
 
-        removeFrequency(node);
-        refreshMinimum();
-        node.frequency++;
-        addFrequency(node);
+        incrementFrequency(node);
 
         return node.val;
     }
@@ -33,30 +30,30 @@ class LFUCache {
         if (cache.containsKey(key)) {
             Node node = cache.get(key);
             node.val = value;
-
-            removeFrequency(node);
-            refreshMinimum();
-            node.frequency++;
-            addFrequency(node);
-
+            incrementFrequency(node);
             cache.put(key, node);
         } else {
-            if (cache.size() == capacity) {
-                removeLruIfFull();
-            }
-
-            Node node = new Node(key, value);
-            node.frequency++;
-
-            addFrequency(node);
-            minimumFrequency = 1;
-
-            cache.put(key, node);
+            removeLrfuIfFull();
+            add(key, value);
         }
 
     }
 
-    private void removeLruIfFull() {
+    private void add(int key, int value) {
+        Node node = new Node(key, value);
+        cache.put(key, node);
+        addFrequency(node);
+        minimumFrequency = 1;
+    }
+
+    private void incrementFrequency(Node node) {
+        removeFrequency(node);
+        node.frequency++;
+        addFrequency(node);
+        incrementMinimum();
+    }
+
+    private void removeLrfuIfFull() {
         if (cache.size() == capacity) {
             var list = frequencies.get(minimumFrequency);
             var lru = list.getFirst();
@@ -71,20 +68,14 @@ class LFUCache {
         }
     }
 
-    private void refreshMinimum() {
-        var minimums = frequencies.get(minimumFrequency);
-        if (minimums.isEmpty()) {
+    private void incrementMinimum() {
+        if (frequencies.get(minimumFrequency).isEmpty()) {
             frequencies.remove(minimumFrequency);
             minimumFrequency++;
         }
     }
 
     private void addFrequency(Node node) {
-        frequencies.computeIfAbsent(node.frequency, ignore -> new DoubleLinkedList()).addLast(node);
-    }
-
-    private void incrementAndAdd(Node node) {
-        node.frequency++;
         frequencies.computeIfAbsent(node.frequency, ignore -> new DoubleLinkedList()).addLast(node);
     }
 }
@@ -104,6 +95,7 @@ class Node {
     public Node(int key, int val) {
         this.key = key;
         this.val = val;
+        this.frequency = 1;
     }
 }
 
