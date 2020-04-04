@@ -23,17 +23,20 @@ class LFUCache {
     }
 
     public void put(int key, int value) {
+        if (capacity <= 0) return;
+
         if (cache.containsKey(key)) {
             Node node = cache.get(key);
             node.val = value;
             incrementFrequency(node);
             cache.put(key, node);
         } else {
-            Node node = new Node(key, value);
             if (cache.size() == capacity) {
                 removeLruIfFull();
             }
 
+
+            Node node = new Node(key, value);
             incrementFrequency(node);
             cache.put(key, node);
 
