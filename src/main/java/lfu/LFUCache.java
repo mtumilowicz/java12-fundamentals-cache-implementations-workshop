@@ -28,8 +28,8 @@ class LFUCache {
 
     int capacity;
     HashMap<Integer, Node> cache = new HashMap<>();
-    HashMap<Integer, NodeDLinkedList> freqNodeDLLMap = new HashMap<>();
-    int minumumFrequency = 1;
+    HashMap<Integer, NodeDLinkedList> frequencies = new HashMap<>();
+    int minimumFrequency = 1;
 
     public LFUCache(int capacity) {
         this.capacity = capacity;
@@ -55,7 +55,7 @@ class LFUCache {
             Node node = new Node(key, value);                                           //Create new node
 
             if (cache.size() == capacity) {                                          //Cache is full
-                Node removedLastNode = freqNodeDLLMap.get(minumumFrequency)
+                Node removedLastNode = frequencies.get(minimumFrequency)
                         .removeLastNode();                              //Remove LFU node from removedLastNode
                 cache.remove(removedLastNode.key);                                 //Remove LFU node from cache
             }
@@ -63,14 +63,14 @@ class LFUCache {
             incrementFrequency(node);                                                   //Add to frequency map
             cache.put(key, node);                                                  //Add to cache
 
-            minumumFrequency = 1;                                                       //Since new node is having freqency as 1,
+            minimumFrequency = 1;                                                       //Since new node is having freqency as 1,
             //update minumumFrequency to be 1
         }
 
     }
 
     private boolean isOnlyMinimum(Node node) {
-        NodeDLinkedList oldNodeDLinkedList = freqNodeDLLMap.get(node.frequency);
+        NodeDLinkedList oldNodeDLinkedList = frequencies.get(node.frequency);
         return isMinimumFrequency(node) && oldNodeDLinkedList.hasSingleElement();
     }
 
@@ -78,23 +78,23 @@ class LFUCache {
 
         int oldFrequency = node.frequency;
 
-        if (freqNodeDLLMap.containsKey(oldFrequency)) {
+        if (frequencies.containsKey(oldFrequency)) {
             if (isOnlyMinimum(node)) {
-                minumumFrequency++;
+                minimumFrequency++;
             }
-            NodeDLinkedList oldNodeDLinkedList = freqNodeDLLMap.get(oldFrequency);
+            NodeDLinkedList oldNodeDLinkedList = frequencies.get(oldFrequency);
             oldNodeDLinkedList.remove(node);
         }
 
         int newFrequency = oldFrequency + 1;
         node.frequency = newFrequency;
-        NodeDLinkedList newNodeDLinkedList = freqNodeDLLMap.getOrDefault(newFrequency, new NodeDLinkedList());
+        NodeDLinkedList newNodeDLinkedList = frequencies.getOrDefault(newFrequency, new NodeDLinkedList());
         newNodeDLinkedList.add(node);
-        freqNodeDLLMap.put(newFrequency, newNodeDLinkedList);
+        frequencies.put(newFrequency, newNodeDLinkedList);
     }
 
     private boolean isMinimumFrequency(Node node) {
-        return node.frequency == minumumFrequency;
+        return node.frequency == minimumFrequency;
     }
 }
 
