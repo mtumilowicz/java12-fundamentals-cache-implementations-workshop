@@ -78,7 +78,7 @@ class LRUCache2 {
 
     public void put(int key, int value) {
         Optional.ofNullable(cache.get(key))
-                .ifPresentOrElse(this::removeIfNonNull, this::removeLruIfFull);
+                .ifPresentOrElse(this::remove, this::removeLruIfFull);
         add(key, value);
     }
 
@@ -91,11 +91,11 @@ class LRUCache2 {
 
     private void removeLruIfFull() {
         if (size == capacity) {
-            removeIfNonNull(lru.getFirst());
+            remove(lru.getFirst());
         }
     }
 
-    private void removeIfNonNull(DoubleLinkedListNode node) {
+    private void remove(DoubleLinkedListNode node) {
         Optional.ofNullable(node).ifPresent(x -> {
             cache.remove(node.key);
             lru.remove(node);
