@@ -46,7 +46,7 @@ class LRUCacheTest extends Specification {
 
     def 'verify if oldest entries are removed'() {
         given: 'empty cache with threshold 3'
-        def cache = new LRUCache(3)
+        def cache = new LRUCache<Integer, Integer>(3)
 
         when: 'overflow threshold by 2'
         cache.put(1, 1)
@@ -67,7 +67,7 @@ class LRUCacheTest extends Specification {
 
     def 'changing value of existing key marks entry as a most recently used'() {
         given: 'empty cache with threshold 3'
-        def cache = new LRUCache(3)
+        def cache = new LRUCache<Integer, Integer>(3)
 
         when: 'overflow threshold by 2'
         cache.put(1, 1)
