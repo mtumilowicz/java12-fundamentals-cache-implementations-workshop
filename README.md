@@ -28,7 +28,7 @@
     * both in `O(1)`
 * solutions
     * `LinkedHashMap<Integer, Integer>` + overridden `removeEldestEntry` method
-        * remark: LinkedHashMap has two iteration order: access-order or insertion-order
+        * remark: `LinkedHashMap` has two iteration order: access-order or insertion-order
     * map + double linked list
     
 ## least frequently used 
