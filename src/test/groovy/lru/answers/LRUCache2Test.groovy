@@ -1,4 +1,5 @@
-package lru
+package lru.answers
+
 
 import spock.lang.Specification
 

@@ -1,12 +1,13 @@
-package lru
+package lru.workshop
+
 
 import spock.lang.Specification
 
-class LRUCacheTest extends Specification {
+class LRUCacheWorkshopTest extends Specification {
 
     def 'empty'() {
         given: 'empty cache'
-        def cache = new LRUCache<Integer, Integer>(1)
+        def cache = new LRUCacheWorkshop<Integer, Integer>(1)
 
         expect: 'get non-existing item returns null'
         !cache.get(1)
@@ -14,7 +15,7 @@ class LRUCacheTest extends Specification {
 
     def 'put - get'() {
         given: 'empty cache'
-        def cache = new LRUCache<Integer, Integer>(1)
+        def cache = new LRUCacheWorkshop<Integer, Integer>(1)
 
         when: 'insert entry'
         cache.put(1, 2)
@@ -25,7 +26,7 @@ class LRUCacheTest extends Specification {
 
     def 'get marks entry as a most recently used'() {
         given: 'empty cache with threshold 2'
-        def cache = new LRUCache<Integer, Integer>(2)
+        def cache = new LRUCacheWorkshop<Integer, Integer>(2)
 
         and: 'fill the cache'
         cache.put(1, 1)
@@ -46,7 +47,7 @@ class LRUCacheTest extends Specification {
 
     def 'verify if oldest entries are removed'() {
         given: 'empty cache with threshold 3'
-        def cache = new LRUCache<Integer, Integer>(3)
+        def cache = new LRUCacheWorkshop<Integer, Integer>(3)
 
         when: 'overflow threshold by 2'
         cache.put(1, 1)
@@ -67,7 +68,7 @@ class LRUCacheTest extends Specification {
 
     def 'changing value of existing entry marks it as a most recently used'() {
         given: 'empty cache with threshold 3'
-        def cache = new LRUCache<Integer, Integer>(3)
+        def cache = new LRUCacheWorkshop<Integer, Integer>(3)
 
         when: 'overflow threshold by 2'
         cache.put(1, 1)

@@ -1,4 +1,4 @@
-package lru;
+package lru.answers;
 
 import list.DoublyLinkedList;
 import list.Node;

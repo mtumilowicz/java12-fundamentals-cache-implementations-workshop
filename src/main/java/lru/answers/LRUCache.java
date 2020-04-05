@@ -1,4 +1,4 @@
-package lru;
+package lru.answers;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
