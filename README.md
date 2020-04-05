@@ -16,7 +16,8 @@
     * understand concept of LFU cache
     * implement LRU and LFU cache
 
-* workshop: answers: 
+* workshop: `lfu.workshop`, `lru.workshop`
+* answers: `lfu.answers`, `lru.answers`
 
 ## least recently used (LRU)
 * discards the least recently used items first
