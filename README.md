@@ -15,8 +15,10 @@
     * understand concept of LRU cache
     * understand concept of LFU cache
     * implement LRU and LFU cache
+    * see how guards are useful in list implementations
 
 * workshop: `lfu.workshop`, `lru.workshop`
+    * during implementation use classes from `list`
 * answers: `lfu.answers`, `lru.answers`
 
 ## least recently used (LRU)
