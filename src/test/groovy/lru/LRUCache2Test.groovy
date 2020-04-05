@@ -65,7 +65,7 @@ class LRUCache2Test extends Specification {
         cache.get(5) == 5
     }
 
-    def 'changing value of existing key marks entry as a most recently used'() {
+    def 'changing value of existing entry marks it as a most recently used'() {
         given: 'empty cache with threshold 3'
         def cache = new LRUCache<Integer, Integer>(3)
 

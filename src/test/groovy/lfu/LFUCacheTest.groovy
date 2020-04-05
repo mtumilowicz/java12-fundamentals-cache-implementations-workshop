@@ -1,6 +1,5 @@
 package lfu
 
-import lru.LRUCache
 import spock.lang.Specification
 
 class LFUCacheTest extends Specification {
@@ -45,7 +44,7 @@ class LFUCacheTest extends Specification {
         cache.get(5) == 5
     }
 
-    def 'same frequencies: changing value of existing key marks entry as a most recently used'() {
+    def 'same frequencies: changing value of existing entry marks it as a most frequently used'() {
         given: 'empty cache with threshold 3'
         def cache = new LFUCache<Integer, Integer>(3)
 
