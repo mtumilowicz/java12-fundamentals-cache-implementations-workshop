@@ -1,12 +1,13 @@
-package lfu
+package lfu.workshop
+
 
 import spock.lang.Specification
 
-class LFUCacheTest extends Specification {
+class LFUCacheWorkshopTest extends Specification {
 
     def 'empty'() {
         given: 'empty cache'
-        def cache = new LFUCache<Integer, Integer>(1)
+        def cache = new LFUCacheWorkshop<Integer, Integer>(1)
 
         expect: 'get non-existing item returns null'
         !cache.get(1)
@@ -14,7 +15,7 @@ class LFUCacheTest extends Specification {
 
     def 'put - get'() {
         given: 'empty cache'
-        def cache = new LFUCache<Integer, Integer>(1)
+        def cache = new LFUCacheWorkshop<Integer, Integer>(1)
 
         when: 'insert entry'
         cache.put(1, 2)
@@ -25,7 +26,7 @@ class LFUCacheTest extends Specification {
 
     def 'same frequencies: verify if oldest entries are removed'() {
         given: 'empty cache with threshold 3'
-        def cache = new LFUCache<Integer, Integer>(3)
+        def cache = new LFUCacheWorkshop<Integer, Integer>(3)
 
         when: 'overflow threshold by 2'
         cache.put(1, 1)
@@ -46,7 +47,7 @@ class LFUCacheTest extends Specification {
 
     def 'same frequencies: changing value of existing entry marks it as a most frequently used'() {
         given: 'empty cache with threshold 3'
-        def cache = new LFUCache<Integer, Integer>(3)
+        def cache = new LFUCacheWorkshop<Integer, Integer>(3)
 
         when: 'overflow threshold by 2'
         cache.put(1, 1)
@@ -70,7 +71,7 @@ class LFUCacheTest extends Specification {
 
     def 'different frequencies: verify if least frequently used are removed'() {
         given: 'empty cache with threshold 3'
-        def cache = new LFUCache<Integer, Integer>(3)
+        def cache = new LFUCacheWorkshop<Integer, Integer>(3)
 
         and: 'fill the cache'
         cache.put(1, 1)

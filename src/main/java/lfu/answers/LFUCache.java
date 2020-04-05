@@ -1,4 +1,4 @@
-package lfu;
+package lfu.answers;
 
 import list.DoublyLinkedList;
 import list.Node;
@@ -50,7 +50,7 @@ class LFUCache<K, V> {
         removeFrequency(node);
         node.frequency++;
         addFrequency(node);
-        incrementMinimum();
+        incrementMinimumIfNeeded();
     }
 
     private void removeLrfuIfFull() {
@@ -68,7 +68,7 @@ class LFUCache<K, V> {
         }
     }
 
-    private void incrementMinimum() {
+    private void incrementMinimumIfNeeded() {
         if (frequencies.get(minimumFrequency).isEmpty()) {
             frequencies.remove(minimumFrequency);
             minimumFrequency++;

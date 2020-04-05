@@ -28,7 +28,7 @@ class LRUCache2Workshop<K, V> {
 
     public void put(K key, V value) {
         // if contains: replace and mark as a most recently used, hint: cache, usageLog.moveToEnd
-        // if not: remove least recently used from cache, add new value
+        // if not: remove least recently used from cache if full, add new value
         // hint: removeLruIfFull, addNew
     }
 
