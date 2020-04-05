@@ -55,20 +55,16 @@ class LFUCacheWorkshop<K, V> {
     }
 
     private void removeFrequency(Node<K, V> node) {
-        if (frequencies.containsKey(node.frequency)) {
-            frequencies.get(node.frequency).remove(node);
-        }
+        // if there is frequency - remove node from its list
+        // hint: frequencies.containsKey, remove
     }
 
     private void incrementMinimumIfNeeded() {
-        if (frequencies.get(minimumFrequency).isEmpty()) {
-            frequencies.remove(minimumFrequency);
-            minimumFrequency++;
-        }
+        // if list of minimum is empty, remove entry and increment minimum frequency
     }
 
     private void addFrequency(Node<K, V> node) {
-        frequencies.computeIfAbsent(node.frequency, ignore -> new DoublyLinkedList<>()).addLast(node);
+        // add frequency, hint: computeIfAbsent, addLast
     }
 }
 
