@@ -4,7 +4,7 @@ public class Node<K, V> {
 
     public K key;
     public V val;
-    public int frequency;
+    public int frequency = 1;
     public Node<K, V> prev;
     public Node<K, V> next;
 
