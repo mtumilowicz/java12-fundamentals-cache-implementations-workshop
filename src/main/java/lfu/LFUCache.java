@@ -29,8 +29,6 @@ class LFUCache<K, V> {
     }
 
     public void put(K key, V value) {
-        if (capacity <= 0) return;
-
         if (cache.containsKey(key)) {
             Node<K, V> node = cache.get(key);
             node.val = value;
